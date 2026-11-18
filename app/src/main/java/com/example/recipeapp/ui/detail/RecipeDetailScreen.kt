@@ -78,6 +78,18 @@ private fun RecipeDetailContent(
                     style = MaterialTheme.typography.bodyLarge
                 )
             }
+            Spacer(modifier = Modifier.height(16.dp))
+            Text(
+                text = "Steps",
+                style = MaterialTheme.typography.titleMedium
+            )
+            Spacer(modifier = Modifier.height(4.dp))
+            recipe.steps.forEach { step ->
+                Text(
+                    text = "• $step",
+                    style = MaterialTheme.typography.bodyLarge
+                )
+            }
         }
     }
 }
