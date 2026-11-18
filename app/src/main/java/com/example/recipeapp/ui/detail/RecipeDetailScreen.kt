@@ -18,6 +18,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -29,6 +30,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.recipeapp.data.Recipe
+import com.example.recipeapp.ui.components.RecipeTopAppBar
 
 @Composable
 fun RecipeDetailScreen(
@@ -39,18 +41,31 @@ fun RecipeDetailScreen(
     val recipes by viewModel.recipes.collectAsState()
     val recipe = recipes.find { it.id == recipeId }
 
-    if (recipe == null) {
-        Box(
-            modifier = Modifier.fillMaxSize(),
-            contentAlignment = Alignment.Center
-        ) {
-            Text(text = "Recipe not found")
+    Scaffold(
+        topBar = {
+            RecipeTopAppBar(
+                title = recipe?.title ?: "Recipe",
+                canNavigateBack = true,
+                onBack = onBack
+            )
         }
-    } else {
-        RecipeDetailContent(
-            recipe = recipe,
-            onFavoriteClick = { viewModel.toggleFavorite(recipe.id) }
-        )
+    ) { innerPadding ->
+        if (recipe == null) {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(innerPadding),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(text = "Recipe not found")
+            }
+        } else {
+            RecipeDetailContent(
+                recipe = recipe,
+                onFavoriteClick = { viewModel.toggleFavorite(recipe.id) },
+                modifier = Modifier.padding(innerPadding)
+            )
+        }
     }
 }
 
