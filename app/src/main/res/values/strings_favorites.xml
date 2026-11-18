@@ -1,0 +1,4 @@
+<resources>
+    <string name="favorites_title">Favorites</string>
+    <string name="no_favorites">No favorites yet. Open a recipe and tap Add to favorites.</string>
+</resources>
