@@ -19,8 +19,11 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.example.recipeapp.R
 import com.example.recipeapp.data.Recipe
+import com.example.recipeapp.ui.theme.RecipeAppTheme
 
 @Composable
 fun RecipeCard(
@@ -60,5 +63,25 @@ fun RecipeCard(
                 )
             }
         }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun RecipeCardPreview() {
+    RecipeAppTheme {
+        RecipeCard(
+            recipe = Recipe(
+                id = 5,
+                title = "Plov",
+                category = "Dinner",
+                timeMinutes = 90,
+                ingredients = listOf("500 g rice", "500 g beef", "3 carrots"),
+                steps = listOf("Fry the meat.", "Add the rice.", "Cook for 30 minutes."),
+                imageRes = R.drawable.plov
+            ),
+            onClick = {},
+            modifier = Modifier.padding(16.dp)
+        )
     }
 }
