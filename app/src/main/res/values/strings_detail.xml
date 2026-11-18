@@ -1,0 +1,10 @@
+<resources>
+    <string name="detail_default_title">Recipe</string>
+    <string name="detail_recipe_not_found">Recipe not found</string>
+    <string name="detail_category_time">%1$s · %2$d min</string>
+    <string name="detail_ingredients">Ingredients</string>
+    <string name="detail_steps">Steps</string>
+    <string name="detail_list_item">• %1$s</string>
+    <string name="detail_add_to_favorites">Add to favorites</string>
+    <string name="detail_remove_from_favorites">Remove from favorites</string>
+</resources>

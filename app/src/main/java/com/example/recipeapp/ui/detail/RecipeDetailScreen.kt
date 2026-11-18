@@ -27,10 +27,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.recipeapp.R
 import com.example.recipeapp.data.Recipe
 import com.example.recipeapp.ui.components.RecipeTopAppBar
+import com.example.recipeapp.ui.theme.RecipeAppTheme
 
 @Composable
 fun RecipeDetailScreen(
@@ -44,7 +48,7 @@ fun RecipeDetailScreen(
     Scaffold(
         topBar = {
             RecipeTopAppBar(
-                title = recipe?.title ?: "Recipe",
+                title = recipe?.title ?: stringResource(R.string.detail_default_title),
                 canNavigateBack = true,
                 onBack = onBack
             )
@@ -57,7 +61,7 @@ fun RecipeDetailScreen(
                     .padding(innerPadding),
                 contentAlignment = Alignment.Center
             ) {
-                Text(text = "Recipe not found")
+                Text(text = stringResource(R.string.detail_recipe_not_found))
             }
         } else {
             RecipeDetailContent(
@@ -90,31 +94,35 @@ private fun RecipeDetailContent(
                 style = MaterialTheme.typography.headlineSmall
             )
             Text(
-                text = "${recipe.category} · ${recipe.timeMinutes} min",
+                text = stringResource(
+                    R.string.detail_category_time,
+                    recipe.category,
+                    recipe.timeMinutes
+                ),
                 style = MaterialTheme.typography.labelMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
             Spacer(modifier = Modifier.height(16.dp))
             Text(
-                text = "Ingredients",
+                text = stringResource(R.string.detail_ingredients),
                 style = MaterialTheme.typography.titleMedium
             )
             Spacer(modifier = Modifier.height(4.dp))
             recipe.ingredients.forEach { ingredient ->
                 Text(
-                    text = "• $ingredient",
+                    text = stringResource(R.string.detail_list_item, ingredient),
                     style = MaterialTheme.typography.bodyLarge
                 )
             }
             Spacer(modifier = Modifier.height(16.dp))
             Text(
-                text = "Steps",
+                text = stringResource(R.string.detail_steps),
                 style = MaterialTheme.typography.titleMedium
             )
             Spacer(modifier = Modifier.height(4.dp))
             recipe.steps.forEach { step ->
                 Text(
-                    text = "• $step",
+                    text = stringResource(R.string.detail_list_item, step),
                     style = MaterialTheme.typography.bodyLarge
                 )
             }
@@ -134,12 +142,35 @@ private fun RecipeDetailContent(
                 Spacer(modifier = Modifier.width(ButtonDefaults.IconSpacing))
                 Text(
                     text = if (recipe.isFavorite) {
-                        "Remove from favorites"
+                        stringResource(R.string.detail_remove_from_favorites)
                     } else {
-                        "Add to favorites"
+                        stringResource(R.string.detail_add_to_favorites)
                     }
                 )
             }
         }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun RecipeDetailContentPreview() {
+    RecipeAppTheme {
+        RecipeDetailContent(
+            recipe = Recipe(
+                id = 5,
+                title = "Plov",
+                category = "Dinner",
+                timeMinutes = 90,
+                ingredients = listOf("500 g rice", "500 g beef or lamb", "3 carrots", "2 onions"),
+                steps = listOf(
+                    "Fry the meat until brown.",
+                    "Add the onions and carrots.",
+                    "Add the rice and cook for 30 minutes."
+                ),
+                imageRes = R.drawable.plov
+            ),
+            onFavoriteClick = {}
+        )
     }
 }
