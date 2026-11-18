@@ -30,6 +30,7 @@ fun HomeScreen(
 ) {
     val recipes by viewModel.recipes.collectAsState()
     val uiState by viewModel.uiState.collectAsState()
+    val filteredRecipes = viewModel.filter(recipes, uiState.searchText)
 
     Scaffold(
         topBar = {
@@ -51,7 +52,7 @@ fun HomeScreen(
                 contentPadding = PaddingValues(16.dp),
                 verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
-                items(recipes, key = { it.id }) { recipe ->
+                items(filteredRecipes, key = { it.id }) { recipe ->
                     RecipeCard(recipe = recipe, onClick = {})
                 }
             }
