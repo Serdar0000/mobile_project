@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -40,13 +41,17 @@ fun RecipeDetailScreen(
             Text(text = "Recipe not found")
         }
     } else {
-        RecipeDetailContent(recipe = recipe)
+        RecipeDetailContent(
+            recipe = recipe,
+            onFavoriteClick = { viewModel.toggleFavorite(recipe.id) }
+        )
     }
 }
 
 @Composable
 private fun RecipeDetailContent(
     recipe: Recipe,
+    onFavoriteClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Column(modifier = modifier.verticalScroll(rememberScrollState())) {
@@ -91,6 +96,13 @@ private fun RecipeDetailContent(
                     text = "• $step",
                     style = MaterialTheme.typography.bodyLarge
                 )
+            }
+            Spacer(modifier = Modifier.height(24.dp))
+            Button(
+                onClick = onFavoriteClick,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text(text = "Add to favorites")
             }
         }
     }
