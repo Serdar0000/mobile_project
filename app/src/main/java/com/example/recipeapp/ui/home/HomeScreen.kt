@@ -8,8 +8,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -34,7 +36,18 @@ fun HomeScreen(
 
     Scaffold(
         topBar = {
-            RecipeTopAppBar(title = "Recipes", canNavigateBack = false)
+            RecipeTopAppBar(
+                title = "Recipes",
+                canNavigateBack = false,
+                actions = {
+                    IconButton(onClick = onFavoritesClick) {
+                        Icon(
+                            imageVector = Icons.Filled.Favorite,
+                            contentDescription = "Favorites"
+                        )
+                    }
+                }
+            )
         }
     ) { innerPadding ->
         Column(modifier = Modifier.padding(innerPadding)) {
