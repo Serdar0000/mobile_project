@@ -60,6 +60,11 @@ private fun RecipeDetailContent(
                 text = recipe.title,
                 style = MaterialTheme.typography.headlineSmall
             )
+            Text(
+                text = "${recipe.category} · ${recipe.timeMinutes} min",
+                style = MaterialTheme.typography.labelMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
         }
     }
 }
