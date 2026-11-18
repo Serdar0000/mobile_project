@@ -53,7 +53,10 @@ fun HomeScreen(
                 verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
                 items(filteredRecipes, key = { it.id }) { recipe ->
-                    RecipeCard(recipe = recipe, onClick = {})
+                    RecipeCard(
+                        recipe = recipe,
+                        onClick = { onRecipeClick(recipe.id) }
+                    )
                 }
             }
         }
