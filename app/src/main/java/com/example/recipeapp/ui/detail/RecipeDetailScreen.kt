@@ -3,6 +3,7 @@ package com.example.recipeapp.ui.detail
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -65,6 +66,18 @@ private fun RecipeDetailContent(
                 style = MaterialTheme.typography.labelMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
+            Spacer(modifier = Modifier.height(16.dp))
+            Text(
+                text = "Ingredients",
+                style = MaterialTheme.typography.titleMedium
+            )
+            Spacer(modifier = Modifier.height(4.dp))
+            recipe.ingredients.forEach { ingredient ->
+                Text(
+                    text = "• $ingredient",
+                    style = MaterialTheme.typography.bodyLarge
+                )
+            }
         }
     }
 }
