@@ -25,7 +25,7 @@ import com.example.recipeapp.ui.components.RecipeTopAppBar
 
 @Composable
 fun FavoritesScreen(
-    onRecipeClick: (Int) -> Unit,
+    onRecipeClick: (String) -> Unit,
     onBack: () -> Unit,
     viewModel: FavoritesViewModel = viewModel()
 ) {

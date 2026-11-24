@@ -8,7 +8,7 @@ import kotlinx.coroutines.flow.StateFlow
 class DetailViewModel : ViewModel() {
     val recipes: StateFlow<List<Recipe>> = RecipeRepository.recipes
 
-    fun toggleFavorite(id: Int) {
+    fun toggleFavorite(id: String) {
         RecipeRepository.toggleFavorite(id)
     }
 }
