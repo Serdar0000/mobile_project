@@ -32,7 +32,7 @@ import com.example.recipeapp.ui.components.RecipeTopAppBar
 
 @Composable
 fun HomeScreen(
-    onRecipeClick: (Int) -> Unit,
+    onRecipeClick: (String) -> Unit,
     onFavoritesClick: () -> Unit,
     viewModel: HomeViewModel = viewModel()
 ) {
