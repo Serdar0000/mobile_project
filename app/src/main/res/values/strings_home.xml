@@ -4,4 +4,7 @@
     <string name="open_favorites">Open favorites</string>
     <string name="no_recipes_found">No recipes found</string>
     <string name="recipe_time_category">%1$d min · %2$s</string>
+    <string name="loading_recipes">Loading recipes</string>
+    <string name="error_title">Could not load recipes</string>
+    <string name="retry">Retry</string>
 </resources>
