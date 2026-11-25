@@ -24,6 +24,7 @@ class HomeViewModel(
     val uiState: StateFlow<UiState<List<Recipe>>> = _uiState.asStateFlow()
 
     private var loadJob: Job? = null
+    private var lastQuery: String? = null
 
     init {
         loadRecipes(query = "")
@@ -31,14 +32,17 @@ class HomeViewModel(
 
     fun onSearchChange(text: String) {
         _searchText.value = text
-        loadRecipes(query = text, debounceMillis = SEARCH_DEBOUNCE_MILLIS)
+        val query = text.trim()
+        if (query == lastQuery) return
+        loadRecipes(query = query, debounceMillis = SEARCH_DEBOUNCE_MILLIS)
     }
 
     fun retry() {
-        loadRecipes(query = _searchText.value)
+        loadRecipes(query = _searchText.value.trim())
     }
 
     private fun loadRecipes(query: String, debounceMillis: Long = 0) {
+        lastQuery = query
         loadJob?.cancel()
         loadJob = viewModelScope.launch {
             delay(debounceMillis)
