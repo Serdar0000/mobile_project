@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
@@ -33,6 +34,7 @@ import com.example.recipeapp.ui.theme.RecipeAppTheme
 fun FavoriteCard(
     favorite: FavoriteEntity,
     onClick: () -> Unit,
+    onEditNote: () -> Unit,
     onDelete: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -67,6 +69,12 @@ fun FavoriteCard(
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }
+            IconButton(onClick = onEditNote) {
+                Icon(
+                    imageVector = Icons.Filled.Edit,
+                    contentDescription = stringResource(R.string.edit_note)
+                )
+            }
             IconButton(onClick = onDelete) {
                 Icon(
                     imageVector = Icons.Filled.Delete,
@@ -89,6 +97,7 @@ fun FavoriteCardPreview() {
                 category = "Chicken"
             ),
             onClick = {},
+            onEditNote = {},
             onDelete = {},
             modifier = Modifier.padding(16.dp)
         )

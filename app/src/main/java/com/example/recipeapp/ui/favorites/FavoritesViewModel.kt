@@ -23,6 +23,12 @@ class FavoritesViewModel(application: Application) : AndroidViewModel(applicatio
         initialValue = emptyList()
     )
 
+    fun updateNote(id: String, note: String, rating: Int) {
+        viewModelScope.launch {
+            repository.updateNote(id, note, rating)
+        }
+    }
+
     fun delete(id: String) {
         viewModelScope.launch {
             repository.remove(id)

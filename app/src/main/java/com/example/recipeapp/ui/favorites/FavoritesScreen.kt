@@ -12,6 +12,9 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -20,6 +23,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.recipeapp.R
+import com.example.recipeapp.data.local.FavoriteEntity
 import com.example.recipeapp.ui.components.RecipeTopAppBar
 
 @Composable
@@ -29,6 +33,7 @@ fun FavoritesScreen(
     viewModel: FavoritesViewModel = viewModel()
 ) {
     val favorites by viewModel.favorites.collectAsStateWithLifecycle()
+    var editing by remember { mutableStateOf<FavoriteEntity?>(null) }
 
     Scaffold(
         topBar = {
@@ -51,11 +56,24 @@ fun FavoritesScreen(
                     FavoriteCard(
                         favorite = favorite,
                         onClick = { onRecipeClick(favorite.id) },
+                        onEditNote = { editing = favorite },
                         onDelete = { viewModel.delete(favorite.id) }
                     )
                 }
             }
         }
+    }
+
+    editing?.let { favorite ->
+        NoteDialog(
+            initialNote = favorite.note,
+            initialRating = favorite.rating,
+            onDismiss = { editing = null },
+            onSave = { note, rating ->
+                viewModel.updateNote(favorite.id, note, rating)
+                editing = null
+            }
+        )
     }
 }
 
