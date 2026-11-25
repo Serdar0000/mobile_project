@@ -3,7 +3,7 @@ package com.example.recipeapp.ui.home
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.recipeapp.data.Recipe
-import com.example.recipeapp.data.RecipeRepository
+import com.example.recipeapp.data.remote.RecipeRemoteRepository
 import com.example.recipeapp.ui.UiState
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Job
@@ -12,9 +12,10 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import java.io.IOException
 
-class HomeViewModel : ViewModel() {
+class HomeViewModel(
+    private val repository: RecipeRemoteRepository = RecipeRemoteRepository()
+) : ViewModel() {
 
     private val _searchText = MutableStateFlow("")
     val searchText: StateFlow<String> = _searchText.asStateFlow()
@@ -43,7 +44,7 @@ class HomeViewModel : ViewModel() {
             delay(debounceMillis)
             _uiState.value = UiState.Loading
             _uiState.value = try {
-                val recipes = searchRecipes(query)
+                val recipes = repository.searchRecipes(query)
                 if (recipes.isEmpty()) UiState.Empty else UiState.Success(recipes)
             } catch (e: CancellationException) {
                 throw e
@@ -53,18 +54,7 @@ class HomeViewModel : ViewModel() {
         }
     }
 
-    private suspend fun searchRecipes(query: String): List<Recipe> {
-        delay(FAKE_NETWORK_DELAY_MILLIS)
-        if (query.equals("error", ignoreCase = true)) {
-            throw IOException("Test error: type anything else to load recipes")
-        }
-        return RecipeRepository.recipes.value.filter {
-            it.title.contains(query, ignoreCase = true)
-        }
-    }
-
     private companion object {
         const val SEARCH_DEBOUNCE_MILLIS = 400L
-        const val FAKE_NETWORK_DELAY_MILLIS = 1000L
     }
 }
