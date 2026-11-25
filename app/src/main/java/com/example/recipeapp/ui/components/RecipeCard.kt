@@ -16,6 +16,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
@@ -43,6 +44,8 @@ fun RecipeCard(
             AsyncImage(
                 model = recipe.imageUrl,
                 contentDescription = recipe.title,
+                placeholder = painterResource(R.drawable.ic_image_placeholder),
+                error = painterResource(R.drawable.ic_broken_image),
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
                     .size(80.dp)
@@ -57,11 +60,15 @@ fun RecipeCard(
                     overflow = TextOverflow.Ellipsis
                 )
                 Text(
-                    text = stringResource(
-                        R.string.recipe_category_area,
-                        recipe.category,
-                        recipe.area
-                    ),
+                    text = if (recipe.area.isBlank()) {
+                        recipe.category
+                    } else {
+                        stringResource(
+                            R.string.recipe_category_area,
+                            recipe.category,
+                            recipe.area
+                        )
+                    },
                     style = MaterialTheme.typography.labelMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
@@ -70,20 +77,34 @@ fun RecipeCard(
     }
 }
 
+private val previewRecipe = Recipe(
+    id = "52772",
+    title = "Teriyaki Chicken Casserole",
+    category = "Chicken",
+    area = "Japanese",
+    imageUrl = "https://www.themealdb.com/images/media/meals/wvpsxx1468256321.jpg",
+    ingredients = listOf("3/4 cup soy sauce", "1/2 cup water", "2 breasts chicken"),
+    instructions = "Preheat oven to 350F.\nMix the sauce.\nBake for 35 minutes."
+)
+
 @Preview(showBackground = true)
 @Composable
 fun RecipeCardPreview() {
     RecipeAppTheme {
         RecipeCard(
-            recipe = Recipe(
-                id = "5",
-                title = "Plov",
-                category = "Dinner",
-                area = "Uzbek",
-                imageUrl = "",
-                ingredients = listOf("500 g rice", "500 g beef", "3 carrots"),
-                instructions = "Fry the meat.\nAdd the rice.\nCook for 30 minutes."
-            ),
+            recipe = previewRecipe,
+            onClick = {},
+            modifier = Modifier.padding(16.dp)
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun RecipeCardWithoutAreaPreview() {
+    RecipeAppTheme {
+        RecipeCard(
+            recipe = previewRecipe.copy(area = ""),
             onClick = {},
             modifier = Modifier.padding(16.dp)
         )
