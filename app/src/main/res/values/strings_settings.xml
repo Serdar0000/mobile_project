@@ -1,0 +1,7 @@
+<resources>
+    <string name="theme_dark_icon">🌙</string>
+    <string name="theme_light_icon">☀️</string>
+    <string name="sort_menu">Sort</string>
+    <string name="sort_by_name">By name</string>
+    <string name="sort_by_date">By date</string>
+</resources>
