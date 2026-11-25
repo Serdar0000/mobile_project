@@ -16,6 +16,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.recipeapp.R
+import com.example.recipeapp.ui.settings.ThemeToggleButton
 import com.example.recipeapp.ui.theme.RecipeAppTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -25,6 +26,7 @@ fun RecipeTopAppBar(
     canNavigateBack: Boolean,
     onBack: () -> Unit = {},
     actions: @Composable RowScope.() -> Unit = {},
+    showThemeToggle: Boolean = true,
     modifier: Modifier = Modifier
 ) {
     TopAppBar(
@@ -46,7 +48,12 @@ fun RecipeTopAppBar(
                 }
             }
         },
-        actions = actions,
+        actions = {
+            actions()
+            if (showThemeToggle) {
+                ThemeToggleButton()
+            }
+        },
         colors = TopAppBarDefaults.topAppBarColors(
             containerColor = MaterialTheme.colorScheme.primaryContainer,
             titleContentColor = MaterialTheme.colorScheme.onPrimaryContainer,
@@ -61,6 +68,6 @@ fun RecipeTopAppBar(
 @Composable
 fun RecipeTopAppBarPreview() {
     RecipeAppTheme {
-        RecipeTopAppBar(title = "Plov", canNavigateBack = true)
+        RecipeTopAppBar(title = "Plov", canNavigateBack = true, showThemeToggle = false)
     }
 }
