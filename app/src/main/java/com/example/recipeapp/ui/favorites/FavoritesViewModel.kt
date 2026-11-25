@@ -1,10 +1,28 @@
 package com.example.recipeapp.ui.favorites
 
-import androidx.lifecycle.ViewModel
+import android.app.Application
+import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.viewModelScope
+import com.example.recipeapp.data.FavoriteRepository
 import com.example.recipeapp.data.Recipe
 import com.example.recipeapp.data.RecipeRepository
+import com.example.recipeapp.data.local.AppDatabase
+import com.example.recipeapp.data.local.FavoriteEntity
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.stateIn
 
-class FavoritesViewModel : ViewModel() {
+class FavoritesViewModel(application: Application) : AndroidViewModel(application) {
+
+    private val repository = FavoriteRepository(
+        AppDatabase.getInstance(application).favoriteDao()
+    )
+
     val recipes: StateFlow<List<Recipe>> = RecipeRepository.recipes
+
+    val favorites: StateFlow<List<FavoriteEntity>> = repository.getFavorites().stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(5_000),
+        initialValue = emptyList()
+    )
 }
