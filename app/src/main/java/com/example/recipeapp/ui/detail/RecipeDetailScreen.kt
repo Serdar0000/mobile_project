@@ -1,5 +1,6 @@
 package com.example.recipeapp.ui.detail
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -15,6 +16,7 @@ import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -26,6 +28,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -58,21 +61,55 @@ fun RecipeDetailScreen(
             )
         }
     ) { innerPadding ->
-        if (recipe == null) {
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(innerPadding),
+        val contentModifier = Modifier.padding(innerPadding)
+        when (val state = uiState) {
+            is UiState.Loading -> Box(
+                modifier = contentModifier.fillMaxSize(),
+                contentAlignment = Alignment.Center
+            ) {
+                CircularProgressIndicator()
+            }
+            is UiState.Error -> DetailError(
+                message = state.message,
+                onRetry = viewModel::retry,
+                modifier = contentModifier
+            )
+            is UiState.Empty -> Box(
+                modifier = contentModifier.fillMaxSize(),
                 contentAlignment = Alignment.Center
             ) {
                 Text(text = stringResource(R.string.detail_recipe_not_found))
             }
-        } else {
-            RecipeDetailContent(
-                recipe = recipe,
-                onFavoriteClick = { viewModel.toggleFavorite(recipe.id) },
-                modifier = Modifier.padding(innerPadding)
+            is UiState.Success -> RecipeDetailContent(
+                recipe = state.data,
+                onFavoriteClick = { viewModel.toggleFavorite(state.data.id) },
+                modifier = contentModifier
             )
+        }
+    }
+}
+
+@Composable
+private fun DetailError(
+    message: String,
+    onRetry: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Column(
+        modifier = modifier
+            .fillMaxSize()
+            .padding(32.dp),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text(
+            text = message,
+            style = MaterialTheme.typography.bodyLarge,
+            textAlign = TextAlign.Center
+        )
+        Spacer(modifier = Modifier.height(16.dp))
+        Button(onClick = onRetry) {
+            Text(text = stringResource(R.string.detail_retry))
         }
     }
 }
