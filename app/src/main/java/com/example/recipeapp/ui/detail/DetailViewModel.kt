@@ -2,6 +2,7 @@ package com.example.recipeapp.ui.detail
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.example.recipeapp.R
 import com.example.recipeapp.data.Recipe
@@ -15,21 +16,27 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import java.io.IOException
 
-class DetailViewModel(application: Application) : AndroidViewModel(application) {
+class DetailViewModel(
+    application: Application,
+    savedStateHandle: SavedStateHandle
+) : AndroidViewModel(application) {
 
     private val remoteRepository = RecipeRemoteRepository()
 
     private val _uiState = MutableStateFlow<UiState<Recipe>>(UiState.Loading)
     val uiState: StateFlow<UiState<Recipe>> = _uiState.asStateFlow()
 
-    private var recipeId: String = ""
+    private val recipeId: String = savedStateHandle["recipeId"] ?: ""
 
-    fun load(id: String) {
-        recipeId = id
+    init {
+        load()
+    }
+
+    private fun load() {
         viewModelScope.launch {
             _uiState.value = UiState.Loading
             _uiState.value = try {
-                val recipe = remoteRepository.getRecipe(id)
+                val recipe = remoteRepository.getRecipe(recipeId)
                 if (recipe == null) UiState.Empty else UiState.Success(recipe)
             } catch (e: CancellationException) {
                 throw e
@@ -42,7 +49,7 @@ class DetailViewModel(application: Application) : AndroidViewModel(application) 
     }
 
     fun retry() {
-        load(recipeId)
+        load()
     }
 
     fun toggleFavorite(id: String) {

@@ -22,7 +22,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -42,13 +41,9 @@ import com.example.recipeapp.ui.theme.RecipeAppTheme
 
 @Composable
 fun RecipeDetailScreen(
-    recipeId: String,
     onBack: () -> Unit,
     viewModel: DetailViewModel = viewModel()
 ) {
-    LaunchedEffect(recipeId) {
-        viewModel.load(recipeId)
-    }
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val recipe = (uiState as? UiState.Success)?.data
 
