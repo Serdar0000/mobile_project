@@ -22,10 +22,10 @@ fun RecipeApp(navController: NavHostController = rememberNavController()) {
         }
         composable(
             route = "detail/{recipeId}",
-            arguments = listOf(navArgument("recipeId") { type = NavType.IntType })
+            arguments = listOf(navArgument("recipeId") { type = NavType.StringType })
         ) { entry ->
             RecipeDetailScreen(
-                recipeId = entry.arguments?.getInt("recipeId") ?: 0,
+                recipeId = entry.arguments?.getString("recipeId") ?: "",
                 onBack = { navController.navigateUp() }
             )
         }
