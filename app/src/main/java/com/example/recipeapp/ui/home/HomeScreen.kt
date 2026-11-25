@@ -41,7 +41,7 @@ import com.example.recipeapp.ui.components.RecipeTopAppBar
 
 @Composable
 fun HomeScreen(
-    onRecipeClick: (Int) -> Unit,
+    onRecipeClick: (String) -> Unit,
     onFavoritesClick: () -> Unit,
     viewModel: HomeViewModel = viewModel()
 ) {
@@ -86,7 +86,7 @@ fun HomeScreen(
 }
 
 @Composable
-private fun RecipeList(recipes: List<Recipe>, onRecipeClick: (Int) -> Unit) {
+private fun RecipeList(recipes: List<Recipe>, onRecipeClick: (String) -> Unit) {
     LazyColumn(
         contentPadding = PaddingValues(16.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp)

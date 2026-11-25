@@ -1,6 +1,5 @@
 package com.example.recipeapp.ui.components
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -17,11 +16,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import coil3.compose.AsyncImage
 import com.example.recipeapp.R
 import com.example.recipeapp.data.Recipe
 import com.example.recipeapp.ui.theme.RecipeAppTheme
@@ -41,8 +40,8 @@ fun RecipeCard(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier.padding(12.dp)
         ) {
-            Image(
-                painter = painterResource(recipe.imageRes),
+            AsyncImage(
+                model = recipe.imageUrl,
                 contentDescription = recipe.title,
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
@@ -59,9 +58,9 @@ fun RecipeCard(
                 )
                 Text(
                     text = stringResource(
-                        R.string.recipe_time_category,
-                        recipe.timeMinutes,
-                        recipe.category
+                        R.string.recipe_category_area,
+                        recipe.category,
+                        recipe.area
                     ),
                     style = MaterialTheme.typography.labelMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
@@ -77,13 +76,13 @@ fun RecipeCardPreview() {
     RecipeAppTheme {
         RecipeCard(
             recipe = Recipe(
-                id = 5,
+                id = "5",
                 title = "Plov",
                 category = "Dinner",
-                timeMinutes = 90,
+                area = "Uzbek",
+                imageUrl = "",
                 ingredients = listOf("500 g rice", "500 g beef", "3 carrots"),
-                steps = listOf("Fry the meat.", "Add the rice.", "Cook for 30 minutes."),
-                imageRes = R.drawable.plov
+                instructions = "Fry the meat.\nAdd the rice.\nCook for 30 minutes."
             ),
             onClick = {},
             modifier = Modifier.padding(16.dp)

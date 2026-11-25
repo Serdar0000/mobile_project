@@ -1,6 +1,5 @@
 package com.example.recipeapp.ui.detail
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -26,11 +25,11 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import coil3.compose.AsyncImage
 import com.example.recipeapp.R
 import com.example.recipeapp.data.Recipe
 import com.example.recipeapp.ui.components.RecipeTopAppBar
@@ -38,7 +37,7 @@ import com.example.recipeapp.ui.theme.RecipeAppTheme
 
 @Composable
 fun RecipeDetailScreen(
-    recipeId: Int,
+    recipeId: String,
     onBack: () -> Unit,
     viewModel: DetailViewModel = viewModel()
 ) {
@@ -80,8 +79,8 @@ private fun RecipeDetailContent(
     modifier: Modifier = Modifier
 ) {
     Column(modifier = modifier.verticalScroll(rememberScrollState())) {
-        Image(
-            painter = painterResource(recipe.imageRes),
+        AsyncImage(
+            model = recipe.imageUrl,
             contentDescription = recipe.title,
             contentScale = ContentScale.Crop,
             modifier = Modifier
@@ -95,9 +94,9 @@ private fun RecipeDetailContent(
             )
             Text(
                 text = stringResource(
-                    R.string.detail_category_time,
+                    R.string.detail_category_area,
                     recipe.category,
-                    recipe.timeMinutes
+                    recipe.area
                 ),
                 style = MaterialTheme.typography.labelMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
@@ -120,7 +119,7 @@ private fun RecipeDetailContent(
                 style = MaterialTheme.typography.titleMedium
             )
             Spacer(modifier = Modifier.height(4.dp))
-            recipe.steps.forEach { step ->
+            recipe.instructions.lines().filter { it.isNotBlank() }.forEach { step ->
                 Text(
                     text = stringResource(R.string.detail_list_item, step),
                     style = MaterialTheme.typography.bodyLarge
@@ -158,17 +157,13 @@ fun RecipeDetailContentPreview() {
     RecipeAppTheme {
         RecipeDetailContent(
             recipe = Recipe(
-                id = 5,
+                id = "5",
                 title = "Plov",
                 category = "Dinner",
-                timeMinutes = 90,
+                area = "Uzbek",
+                imageUrl = "",
                 ingredients = listOf("500 g rice", "500 g beef or lamb", "3 carrots", "2 onions"),
-                steps = listOf(
-                    "Fry the meat until brown.",
-                    "Add the onions and carrots.",
-                    "Add the rice and cook for 30 minutes."
-                ),
-                imageRes = R.drawable.plov
+                instructions = "Fry the meat until brown.\nAdd the onions and carrots.\nAdd the rice and cook for 30 minutes."
             ),
             onFavoriteClick = {}
         )
