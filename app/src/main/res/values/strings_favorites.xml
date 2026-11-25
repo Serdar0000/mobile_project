@@ -5,7 +5,7 @@
     <string name="edit_note">Edit note</string>
     <string name="note_dialog_title">Note</string>
     <string name="note_hint">Your note</string>
-    <string name="rating_stars">%1$d stars</string>
+    <string name="rating_stars">Rating %1$d of 5</string>
     <string name="save">Save</string>
     <string name="cancel">Cancel</string>
 </resources>

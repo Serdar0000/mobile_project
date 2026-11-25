@@ -68,6 +68,20 @@ fun FavoriteCard(
                     style = MaterialTheme.typography.labelMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
+                if (favorite.rating > 0) {
+                    Text(
+                        text = "⭐".repeat(favorite.rating),
+                        style = MaterialTheme.typography.labelMedium
+                    )
+                }
+                if (favorite.note.isNotBlank()) {
+                    Text(
+                        text = favorite.note,
+                        style = MaterialTheme.typography.bodySmall,
+                        maxLines = 2,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                }
             }
             IconButton(onClick = onEditNote) {
                 Icon(
@@ -94,7 +108,9 @@ fun FavoriteCardPreview() {
                 id = "52772",
                 title = "Teriyaki Chicken Casserole",
                 imageUrl = "",
-                category = "Chicken"
+                category = "Chicken",
+                note = "Less soy sauce next time",
+                rating = 4
             ),
             onClick = {},
             onEditNote = {},
