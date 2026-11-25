@@ -45,6 +45,7 @@ fun RecipeDetailScreen(
     viewModel: DetailViewModel = viewModel()
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val isFavorite by viewModel.isFavorite.collectAsStateWithLifecycle()
     val recipe = (uiState as? UiState.Success)?.data
 
     Scaffold(
@@ -77,7 +78,8 @@ fun RecipeDetailScreen(
             }
             is UiState.Success -> RecipeDetailContent(
                 recipe = state.data,
-                onFavoriteClick = { viewModel.toggleFavorite(state.data.id) },
+                isFavorite = isFavorite,
+                onFavoriteClick = viewModel::toggleFavorite,
                 modifier = contentModifier
             )
         }
@@ -112,6 +114,7 @@ private fun DetailError(
 @Composable
 private fun RecipeDetailContent(
     recipe: Recipe,
+    isFavorite: Boolean,
     onFavoriteClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -168,7 +171,7 @@ private fun RecipeDetailContent(
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Icon(
-                    imageVector = if (recipe.isFavorite) {
+                    imageVector = if (isFavorite) {
                         Icons.Filled.Favorite
                     } else {
                         Icons.Filled.FavoriteBorder
@@ -177,7 +180,7 @@ private fun RecipeDetailContent(
                 )
                 Spacer(modifier = Modifier.width(ButtonDefaults.IconSpacing))
                 Text(
-                    text = if (recipe.isFavorite) {
+                    text = if (isFavorite) {
                         stringResource(R.string.detail_remove_from_favorites)
                     } else {
                         stringResource(R.string.detail_add_to_favorites)
@@ -202,6 +205,7 @@ fun RecipeDetailContentPreview() {
                 ingredients = listOf("500 g rice", "500 g beef or lamb", "3 carrots", "2 onions"),
                 instructions = "Fry the meat until brown.\nAdd the onions and carrots.\nAdd the rice and cook for 30 minutes."
             ),
+            isFavorite = false,
             onFavoriteClick = {}
         )
     }
