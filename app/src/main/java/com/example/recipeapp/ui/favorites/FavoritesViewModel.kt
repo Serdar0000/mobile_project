@@ -4,8 +4,6 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.recipeapp.data.FavoriteRepository
-import com.example.recipeapp.data.Recipe
-import com.example.recipeapp.data.RecipeRepository
 import com.example.recipeapp.data.local.AppDatabase
 import com.example.recipeapp.data.local.FavoriteEntity
 import kotlinx.coroutines.flow.SharingStarted
@@ -17,8 +15,6 @@ class FavoritesViewModel(application: Application) : AndroidViewModel(applicatio
     private val repository = FavoriteRepository(
         AppDatabase.getInstance(application).favoriteDao()
     )
-
-    val recipes: StateFlow<List<Recipe>> = RecipeRepository.recipes
 
     val favorites: StateFlow<List<FavoriteEntity>> = repository.getFavorites().stateIn(
         scope = viewModelScope,
