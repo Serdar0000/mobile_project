@@ -20,7 +20,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -28,10 +28,12 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil3.compose.AsyncImage
 import com.example.recipeapp.R
 import com.example.recipeapp.data.Recipe
+import com.example.recipeapp.ui.UiState
 import com.example.recipeapp.ui.components.RecipeTopAppBar
 import com.example.recipeapp.ui.theme.RecipeAppTheme
 
@@ -41,8 +43,11 @@ fun RecipeDetailScreen(
     onBack: () -> Unit,
     viewModel: DetailViewModel = viewModel()
 ) {
-    val recipes by viewModel.recipes.collectAsState()
-    val recipe = recipes.find { it.id == recipeId }
+    LaunchedEffect(recipeId) {
+        viewModel.load(recipeId)
+    }
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val recipe = (uiState as? UiState.Success)?.data
 
     Scaffold(
         topBar = {
