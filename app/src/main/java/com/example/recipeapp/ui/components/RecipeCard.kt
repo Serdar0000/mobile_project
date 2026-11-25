@@ -60,11 +60,15 @@ fun RecipeCard(
                     overflow = TextOverflow.Ellipsis
                 )
                 Text(
-                    text = stringResource(
-                        R.string.recipe_category_area,
-                        recipe.category,
-                        recipe.area
-                    ),
+                    text = if (recipe.area.isBlank()) {
+                        recipe.category
+                    } else {
+                        stringResource(
+                            R.string.recipe_category_area,
+                            recipe.category,
+                            recipe.area
+                        )
+                    },
                     style = MaterialTheme.typography.labelMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
