@@ -1,7 +1,9 @@
 package com.example.recipeapp.ui.home
 
-import androidx.lifecycle.ViewModel
+import android.app.Application
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.recipeapp.R
 import com.example.recipeapp.data.Recipe
 import com.example.recipeapp.data.remote.RecipeRemoteRepository
 import com.example.recipeapp.ui.UiState
@@ -12,10 +14,11 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import java.io.IOException
 
-class HomeViewModel(
-    private val repository: RecipeRemoteRepository = RecipeRemoteRepository()
-) : ViewModel() {
+class HomeViewModel(application: Application) : AndroidViewModel(application) {
+
+    private val repository = RecipeRemoteRepository()
 
     private val _searchText = MutableStateFlow("")
     val searchText: StateFlow<String> = _searchText.asStateFlow()
@@ -52,11 +55,15 @@ class HomeViewModel(
                 if (recipes.isEmpty()) UiState.Empty else UiState.Success(recipes)
             } catch (e: CancellationException) {
                 throw e
+            } catch (e: IOException) {
+                UiState.Error(getString(R.string.error_no_internet))
             } catch (e: Exception) {
-                UiState.Error(e.message ?: "Unknown error")
+                UiState.Error(getString(R.string.error_unknown))
             }
         }
     }
+
+    private fun getString(resId: Int): String = getApplication<Application>().getString(resId)
 
     private companion object {
         const val SEARCH_DEBOUNCE_MILLIS = 400L
