@@ -9,6 +9,7 @@ import com.example.recipeapp.data.local.FavoriteEntity
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
 
 class FavoritesViewModel(application: Application) : AndroidViewModel(application) {
 
@@ -21,4 +22,10 @@ class FavoritesViewModel(application: Application) : AndroidViewModel(applicatio
         started = SharingStarted.WhileSubscribed(5_000),
         initialValue = emptyList()
     )
+
+    fun delete(id: String) {
+        viewModelScope.launch {
+            repository.remove(id)
+        }
+    }
 }

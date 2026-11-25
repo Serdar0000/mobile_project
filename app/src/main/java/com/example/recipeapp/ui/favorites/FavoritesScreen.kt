@@ -50,7 +50,8 @@ fun FavoritesScreen(
                 items(favorites, key = { it.id }) { favorite ->
                     FavoriteCard(
                         favorite = favorite,
-                        onClick = { onRecipeClick(favorite.id) }
+                        onClick = { onRecipeClick(favorite.id) },
+                        onDelete = { viewModel.delete(favorite.id) }
                     )
                 }
             }
