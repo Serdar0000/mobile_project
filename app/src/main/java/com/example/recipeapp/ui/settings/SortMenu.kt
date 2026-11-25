@@ -15,8 +15,10 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.recipeapp.R
 import com.example.recipeapp.data.SortOrder
 
 @Composable
@@ -31,7 +33,7 @@ fun SortMenu(
         IconButton(onClick = { expanded = true }) {
             Icon(
                 imageVector = Icons.AutoMirrored.Filled.List,
-                contentDescription = "Sort"
+                contentDescription = stringResource(R.string.sort_menu)
             )
         }
         DropdownMenu(
@@ -43,8 +45,8 @@ fun SortMenu(
                     text = {
                         Text(
                             text = when (order) {
-                                SortOrder.BY_NAME -> "By name"
-                                SortOrder.BY_DATE -> "By date"
+                                SortOrder.BY_NAME -> stringResource(R.string.sort_by_name)
+                                SortOrder.BY_DATE -> stringResource(R.string.sort_by_date)
                             }
                         )
                     },
