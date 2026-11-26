@@ -25,6 +25,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.recipeapp.R
 import com.example.recipeapp.data.local.FavoriteEntity
 import com.example.recipeapp.ui.components.RecipeTopAppBar
+import com.example.recipeapp.ui.settings.SortMenu
 
 @Composable
 fun FavoritesScreen(
@@ -40,7 +41,8 @@ fun FavoritesScreen(
             RecipeTopAppBar(
                 title = stringResource(R.string.favorites_title),
                 canNavigateBack = true,
-                onBack = onBack
+                onBack = onBack,
+                actions = { SortMenu() }
             )
         }
     ) { innerPadding ->
