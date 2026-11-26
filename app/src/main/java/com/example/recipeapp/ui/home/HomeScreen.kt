@@ -1,5 +1,6 @@
 package com.example.recipeapp.ui.home
 
+import androidx.annotation.DrawableRes
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -9,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
@@ -27,6 +29,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
@@ -90,7 +93,7 @@ fun HomeScreen(
                 is UiState.Loading -> LoadingContent()
                 is UiState.Success -> RecipeList(state.data, onRecipeClick)
                 is UiState.Error -> ErrorContent(state.message, onRetry = { viewModel.retry() })
-                is UiState.Empty -> CenteredMessage(stringResource(R.string.no_recipes_found))
+                is UiState.Empty -> EmptyContent()
             }
         }
     }
@@ -128,6 +131,8 @@ private fun ErrorContent(message: String, onRetry: () -> Unit) {
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
+        StateIcon(R.drawable.ic_cloud_off)
+        Spacer(modifier = Modifier.height(16.dp))
         Text(
             text = stringResource(R.string.error_title),
             style = MaterialTheme.typography.titleMedium,
@@ -148,17 +153,30 @@ private fun ErrorContent(message: String, onRetry: () -> Unit) {
 }
 
 @Composable
-private fun CenteredMessage(text: String) {
-    Box(
+private fun EmptyContent() {
+    Column(
         modifier = Modifier
             .fillMaxSize()
             .padding(32.dp),
-        contentAlignment = Alignment.Center
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
+        StateIcon(R.drawable.ic_search_off)
+        Spacer(modifier = Modifier.height(16.dp))
         Text(
-            text = text,
+            text = stringResource(R.string.no_recipes_found),
             style = MaterialTheme.typography.bodyLarge,
             color = MaterialTheme.colorScheme.onSurfaceVariant
         )
     }
+}
+
+@Composable
+private fun StateIcon(@DrawableRes iconRes: Int) {
+    Icon(
+        painter = painterResource(iconRes),
+        contentDescription = null,
+        tint = MaterialTheme.colorScheme.primary,
+        modifier = Modifier.size(64.dp)
+    )
 }
