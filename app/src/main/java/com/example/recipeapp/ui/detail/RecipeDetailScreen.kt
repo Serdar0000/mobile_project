@@ -111,6 +111,13 @@ private fun DetailError(
     }
 }
 
+private val stepNumber = Regex("""(?i)(step\s*)?\d+[.):]?""")
+
+private fun String.toSteps(): List<String> =
+    lines()
+        .map { it.trim() }
+        .filter { it.isNotEmpty() && !it.matches(stepNumber) }
+
 @Composable
 private fun RecipeDetailContent(
     recipe: Recipe,
@@ -159,7 +166,7 @@ private fun RecipeDetailContent(
                 style = MaterialTheme.typography.titleMedium
             )
             Spacer(modifier = Modifier.height(4.dp))
-            recipe.instructions.lines().filter { it.isNotBlank() }.forEach { step ->
+            recipe.instructions.toSteps().forEach { step ->
                 Text(
                     text = stringResource(R.string.detail_list_item, step),
                     style = MaterialTheme.typography.bodyLarge
