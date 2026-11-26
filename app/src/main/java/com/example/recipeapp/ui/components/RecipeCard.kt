@@ -7,8 +7,11 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -30,7 +33,8 @@ import com.example.recipeapp.ui.theme.RecipeAppTheme
 fun RecipeCard(
     recipe: Recipe,
     onClick: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    isFavorite: Boolean = false
 ) {
     Card(
         onClick = onClick,
@@ -52,7 +56,7 @@ fun RecipeCard(
                     .clip(MaterialTheme.shapes.small)
             )
             Spacer(modifier = Modifier.width(16.dp))
-            Column {
+            Column(modifier = Modifier.weight(1f)) {
                 Text(
                     text = recipe.title,
                     style = MaterialTheme.typography.titleMedium,
@@ -71,6 +75,14 @@ fun RecipeCard(
                     },
                     style = MaterialTheme.typography.labelMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
+            if (isFavorite) {
+                Spacer(modifier = Modifier.width(8.dp))
+                Icon(
+                    imageVector = Icons.Filled.Favorite,
+                    contentDescription = stringResource(R.string.in_favorites),
+                    tint = MaterialTheme.colorScheme.primary
                 )
             }
         }
@@ -94,7 +106,8 @@ fun RecipeCardPreview() {
         RecipeCard(
             recipe = previewRecipe,
             onClick = {},
-            modifier = Modifier.padding(16.dp)
+            modifier = Modifier.padding(16.dp),
+            isFavorite = true
         )
     }
 }

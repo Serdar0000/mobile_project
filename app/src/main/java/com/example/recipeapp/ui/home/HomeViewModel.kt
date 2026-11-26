@@ -4,21 +4,33 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.recipeapp.R
+import com.example.recipeapp.data.FavoriteRepository
 import com.example.recipeapp.data.Recipe
+import com.example.recipeapp.data.local.AppDatabase
 import com.example.recipeapp.data.remote.RecipeRemoteRepository
 import com.example.recipeapp.ui.UiState
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import java.io.IOException
 
 class HomeViewModel(application: Application) : AndroidViewModel(application) {
 
     private val repository = RecipeRemoteRepository()
+    private val favoriteRepository = FavoriteRepository(
+        AppDatabase.getInstance(application).favoriteDao()
+    )
+
+    val favoriteIds: StateFlow<Set<String>> = favoriteRepository.getFavorites()
+        .map { favorites -> favorites.map { it.id }.toSet() }
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptySet())
 
     private val _searchText = MutableStateFlow("")
     val searchText: StateFlow<String> = _searchText.asStateFlow()

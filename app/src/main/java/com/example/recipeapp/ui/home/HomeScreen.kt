@@ -51,6 +51,7 @@ fun HomeScreen(
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val searchText by viewModel.searchText.collectAsStateWithLifecycle()
+    val favoriteIds by viewModel.favoriteIds.collectAsStateWithLifecycle()
 
     Scaffold(
         topBar = {
@@ -91,7 +92,7 @@ fun HomeScreen(
             )
             when (val state = uiState) {
                 is UiState.Loading -> LoadingContent()
-                is UiState.Success -> RecipeList(state.data, onRecipeClick)
+                is UiState.Success -> RecipeList(state.data, favoriteIds, onRecipeClick)
                 is UiState.Error -> ErrorContent(state.message, onRetry = { viewModel.retry() })
                 is UiState.Empty -> EmptyContent()
             }
@@ -100,7 +101,11 @@ fun HomeScreen(
 }
 
 @Composable
-private fun RecipeList(recipes: List<Recipe>, onRecipeClick: (String) -> Unit) {
+private fun RecipeList(
+    recipes: List<Recipe>,
+    favoriteIds: Set<String>,
+    onRecipeClick: (String) -> Unit
+) {
     LazyColumn(
         contentPadding = PaddingValues(16.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp)
@@ -108,7 +113,8 @@ private fun RecipeList(recipes: List<Recipe>, onRecipeClick: (String) -> Unit) {
         items(recipes, key = { it.id }) { recipe ->
             RecipeCard(
                 recipe = recipe,
-                onClick = { onRecipeClick(recipe.id) }
+                onClick = { onRecipeClick(recipe.id) },
+                isFavorite = recipe.id in favoriteIds
             )
         }
     }
