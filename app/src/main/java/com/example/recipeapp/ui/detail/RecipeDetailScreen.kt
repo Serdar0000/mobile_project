@@ -1,5 +1,6 @@
 package com.example.recipeapp.ui.detail
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -15,34 +16,37 @@ import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil3.compose.AsyncImage
 import com.example.recipeapp.R
 import com.example.recipeapp.data.Recipe
+import com.example.recipeapp.ui.UiState
 import com.example.recipeapp.ui.components.RecipeTopAppBar
 import com.example.recipeapp.ui.theme.RecipeAppTheme
 
 @Composable
 fun RecipeDetailScreen(
-    recipeId: String,
     onBack: () -> Unit,
     viewModel: DetailViewModel = viewModel()
 ) {
-    val recipes by viewModel.recipes.collectAsState()
-    val recipe = recipes.find { it.id == recipeId }
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val isFavorite by viewModel.isFavorite.collectAsStateWithLifecycle()
+    val recipe = (uiState as? UiState.Success)?.data
 
     Scaffold(
         topBar = {
@@ -53,28 +57,71 @@ fun RecipeDetailScreen(
             )
         }
     ) { innerPadding ->
-        if (recipe == null) {
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(innerPadding),
+        val contentModifier = Modifier.padding(innerPadding)
+        when (val state = uiState) {
+            is UiState.Loading -> Box(
+                modifier = contentModifier.fillMaxSize(),
+                contentAlignment = Alignment.Center
+            ) {
+                CircularProgressIndicator()
+            }
+            is UiState.Error -> DetailError(
+                message = state.message,
+                onRetry = viewModel::retry,
+                modifier = contentModifier
+            )
+            is UiState.Empty -> Box(
+                modifier = contentModifier.fillMaxSize(),
                 contentAlignment = Alignment.Center
             ) {
                 Text(text = stringResource(R.string.detail_recipe_not_found))
             }
-        } else {
-            RecipeDetailContent(
-                recipe = recipe,
-                onFavoriteClick = { viewModel.toggleFavorite(recipe.id) },
-                modifier = Modifier.padding(innerPadding)
+            is UiState.Success -> RecipeDetailContent(
+                recipe = state.data,
+                isFavorite = isFavorite,
+                onFavoriteClick = viewModel::toggleFavorite,
+                modifier = contentModifier
             )
         }
     }
 }
 
 @Composable
+private fun DetailError(
+    message: String,
+    onRetry: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Column(
+        modifier = modifier
+            .fillMaxSize()
+            .padding(32.dp),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text(
+            text = message,
+            style = MaterialTheme.typography.bodyLarge,
+            textAlign = TextAlign.Center
+        )
+        Spacer(modifier = Modifier.height(16.dp))
+        Button(onClick = onRetry) {
+            Text(text = stringResource(R.string.detail_retry))
+        }
+    }
+}
+
+private val stepNumber = Regex("""(?i)(step\s*)?\d+[.):]?""")
+
+private fun String.toSteps(): List<String> =
+    lines()
+        .map { it.trim() }
+        .filter { it.isNotEmpty() && !it.matches(stepNumber) }
+
+@Composable
 private fun RecipeDetailContent(
     recipe: Recipe,
+    isFavorite: Boolean,
     onFavoriteClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -119,7 +166,7 @@ private fun RecipeDetailContent(
                 style = MaterialTheme.typography.titleMedium
             )
             Spacer(modifier = Modifier.height(4.dp))
-            recipe.instructions.lines().filter { it.isNotBlank() }.forEach { step ->
+            recipe.instructions.toSteps().forEach { step ->
                 Text(
                     text = stringResource(R.string.detail_list_item, step),
                     style = MaterialTheme.typography.bodyLarge
@@ -131,7 +178,7 @@ private fun RecipeDetailContent(
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Icon(
-                    imageVector = if (recipe.isFavorite) {
+                    imageVector = if (isFavorite) {
                         Icons.Filled.Favorite
                     } else {
                         Icons.Filled.FavoriteBorder
@@ -140,7 +187,7 @@ private fun RecipeDetailContent(
                 )
                 Spacer(modifier = Modifier.width(ButtonDefaults.IconSpacing))
                 Text(
-                    text = if (recipe.isFavorite) {
+                    text = if (isFavorite) {
                         stringResource(R.string.detail_remove_from_favorites)
                     } else {
                         stringResource(R.string.detail_add_to_favorites)
@@ -165,6 +212,7 @@ fun RecipeDetailContentPreview() {
                 ingredients = listOf("500 g rice", "500 g beef or lamb", "3 carrots", "2 onions"),
                 instructions = "Fry the meat until brown.\nAdd the onions and carrots.\nAdd the rice and cook for 30 minutes."
             ),
+            isFavorite = false,
             onFavoriteClick = {}
         )
     }

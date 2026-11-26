@@ -1,4 +1,11 @@
 <resources>
     <string name="favorites_title">Favorites</string>
     <string name="no_favorites">No favorites yet. Open a recipe and tap Add to favorites.</string>
+    <string name="delete_favorite">Delete</string>
+    <string name="edit_note">Edit note</string>
+    <string name="note_dialog_title">Note</string>
+    <string name="note_hint">Your note</string>
+    <string name="rating_stars">Rating %1$d of 5</string>
+    <string name="save">Save</string>
+    <string name="cancel">Cancel</string>
 </resources>

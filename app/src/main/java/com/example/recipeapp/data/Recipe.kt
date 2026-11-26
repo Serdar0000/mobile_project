@@ -8,6 +8,5 @@ data class Recipe(
     val imageUrl: String,
     val ingredients: List<String>,
     val instructions: String,
-    val youtubeUrl: String = "",
-    val isFavorite: Boolean = false
+    val youtubeUrl: String = ""
 )
